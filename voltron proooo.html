@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voltron Legendary Defender</title>
+<style>
+body, html {
+  margin:0; padding:0;
+  font-family: Arial, sans-serif;
+  overflow-x:hidden;
+}
+#loginPage {
+  width:100vw; height:100vh;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  background:black;
+}
+.login-input { width:250px; padding:12px; margin:10px; border:2px solid white; border-radius:6px; font-size:18px; background:black; color:white; }
+.login-btn { width:130px; padding:12px; font-size:18px; margin-top:10px; cursor:pointer; border:none; border-radius:6px; background:#222; color:white; }
+.login-btn:hover{background:#555;}
+#loginError { color:red; font-size:18px; display:none; margin-top:10px; }
+
+.page {
+  width:100vw; height:100vh; display:none;
+  background:url("https://i.pinimg.com/736x/17/3f/7b/173f7b016e1fc54e111ba5169fbded3d.jpg") no-repeat center center/cover;
+  overflow:auto;
+  opacity:0; transition: opacity 0.5s ease-in-out;
+}
+.page.active {display:block; opacity:1;}
+.main-title {text-align:center; color:white; font-size:64px; text-shadow:4px 4px 10px black; margin-top:50px;}
+.sub-btn { display:block; width:240px; margin:25px auto; font-size:26px; padding:16px; border:none; border-radius:8px; background:rgba(0,0,0,0.6); color:white; cursor:pointer; transition: all 0.2s ease-in-out; }
+.sub-btn:hover{background:rgba(0,0,0,0.85); transform: scale(1.05); box-shadow:0 6px 12px rgba(0,0,0,0.5);}
+.episode-title {text-align:center; font-size:42px; color:white; margin-top:40px; text-shadow:2px 2px 6px black;}
+.ep-btn { display:block; width:300px; margin:15px auto; padding:14px; font-size:20px; background:rgba(0,0,0,0.7); color:white; border:none; border-radius:6px; cursor:pointer; transition: all 0.2s ease-in-out; }
+.ep-btn:hover{background:rgba(0,0,0,0.9); transform: scale(1.05); box-shadow:0 6px 12px rgba(0,0,0,0.5);}
+.video-container{width:90%; max-width:900px; margin:50px auto; background:black; padding:20px; border-radius:10px;}
+video{width:100%; height:auto; outline:none; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.6);}
+.nav-buttons{width:100%; display:flex; justify-content:space-between; margin-top:20px;}
+.nav-btn{padding:12px 28px; font-size:20px; background:rgba(0,0,0,0.7); color:white; border:none; border-radius:6px; cursor:pointer; transition: all 0.2s ease-in-out;}
+.nav-btn:hover{transform: scale(1.05); box-shadow:0 6px 12px rgba(0,0,0,0.5);}
+
+/* RESPONSIVE */
+@media screen and (max-width:1024px){
+.main-title{font-size:48px; margin-top:40px;}
+.sub-btn{width:200px; font-size:22px; padding:14px;}
+.episode-title{font-size:36px;}
+.ep-btn{width:250px; font-size:18px; padding:12px;}
+.nav-btn{padding:10px 22px; font-size:18px;}
+.video-container{width:95%; padding:15px;}
+}
+@media screen and (max-width:768px){
+.main-title{font-size:36px; margin-top:30px;}
+.sub-btn{width:180px; font-size:20px; padding:12px;}
+.episode-title{font-size:28px;}
+.ep-btn{width:200px; font-size:16px; padding:10px;}
+.nav-btn{padding:8px 18px; font-size:16px;}
+.video-container{width:95%; padding:15px;}
+}
+@media screen and (max-width:480px){
+.main-title{font-size:28px; margin-top:20px;}
+.sub-btn{width:160px; font-size:18px; padding:10px;}
+.episode-title{font-size:22px;}
+.ep-btn{width:160px; font-size:14px; padding:8px;}
+.nav-btn{padding:6px 14px; font-size:14px;}
+.video-container{width:100%; padding:10px;}
+}
+</style>
+<script>
+function login(){
+  let u=document.getElementById("username").value;
+  let p=document.getElementById("password").value;
+  if(u==="CRSA_2010_11" && p==="Ara@1964"){
+    document.getElementById("loginPage").style.display="none";
+    openPage('mainPage');
+    document.getElementById("loginError").style.display="none";
+  }else{
+    document.getElementById("loginError").style.display="block";
+    document.getElementById("username").style.borderColor="red";
+    document.getElementById("password").style.borderColor="red";
+  }
+}
+function openPage(id){
+  document.querySelectorAll(".page").forEach(p=>{
+    if(p.id !== id){  // Only hide non-target pages
+      p.classList.remove("active"); 
+      setTimeout(()=>{p.style.display="none";},500);
+    }
+  });
+  const page=document.getElementById(id);
+  page.style.display="block";
+  setTimeout(()=>{page.classList.add("active");},50);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+</script>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+<input id="username" class="login-input" placeholder="Username">
+<input id="password" class="login-input" placeholder="Password" type="password">
+<button class="login-btn" onclick="login()">Login</button>
+<div id="loginError">Incorrect username or password</div>
+</div>
+<!-- MAIN PAGE -->
+<div id="mainPage" class="page">
+  <div class="main-title">Voltron Legendary Defender</div>
+  <button class="sub-btn" onclick="openPage('season1')">Season 1</button>
+  <button class="sub-btn" onclick="openPage('season2')">Season 2</button>
+  <button class="sub-btn" onclick="openPage('season3')">Season 3</button>
+  <button class="sub-btn" onclick="openPage('season4')">Season 4</button>
+  <button class="sub-btn" onclick="openPage('season5')">Season 5</button>
+  <button class="sub-btn" onclick="openPage('season6')">Season 6</button>
+  <button class="sub-btn" onclick="openPage('season7')">Season 7</button>
+  <button class="sub-btn" onclick="openPage('season8')">Season 8</button>
+</div>
+<!-- SEASON 1 LIST -->
+<div id="season1" class="page">
+  <div class="episode-title">Season 1 – Episode List</div>
+
+  <button class="ep-btn" onclick="openPage('s1ep1')">Episode 1</button>
+  <button class="ep-btn" onclick="openPage('s1ep2')">Episode 2</button>
+  <button class="ep-btn" onclick="openPage('s1ep3')">Episode 3</button>
+  <button class="ep-btn" onclick="openPage('s1ep4')">Episode 4</button>
+  <button class="ep-btn" onclick="openPage('s1ep5')">Episode 5</button>
+  <button class="ep-btn" onclick="openPage('s1ep6')">Episode 6</button>
+  <button class="ep-btn" onclick="openPage('s1ep7')">Episode 7</button>
+  <button class="ep-btn" onclick="openPage('s1ep8')">Episode 8</button>
+  <button class="ep-btn" onclick="openPage('s1ep9')">Episode 9</button>
+  <button class="ep-btn" onclick="openPage('s1ep10')">Episode 10</button>
+  <button class="ep-btn" onclick="openPage('s1ep11')">Episode 11</button>
+
+  <button class="sub-btn" onclick="openPage('mainPage')">Back to Home</button>
+</div>
+
+<!-- SEASON 2 LIST -->
+<div id="season2" class="page">
+  <div class="episode-title">Season 2 – Episode List</div>
+
+  <button class="ep-btn" onclick="openPage('s2ep1')">Episode 1</button>
+  <button class="ep-btn" onclick="openPage('s2ep2')">Episode 2</button>
+  <button class="ep-btn" onclick="openPage('s2ep3')">Episode 3</button>
+  <button class="ep-btn" onclick="openPage('s2ep4')">Episode 4</button>
+  <button class="ep-btn" onclick="openPage('s2ep5')">Episode 5</button>
+  <button class="ep-btn" onclick="openpage('s2ep6')">Episode 6</button>
+  <button class="ep-btn" onclick="openPage('s2ep7')">Episode 7</button>
+  <button class="ep-btn" onclick="openPage('s2ep8')">Episode 8</button>
+  <button class="ep-btn" onclick="openPage('s2ep9')">Episode 9</button>
+  <button class="ep-btn" onclick="openPage('s2ep10')">Episode 10</button>
+  <button class="ep-btn" onclick="openPage('s2ep11')">Episode 11</button>
+  <button class="ep-btn" onclick="openPage('s2ep12')">Episode 12</button>
+  <button class="ep-btn" onclick="openPage('s2ep13')">Episode 13</button>
+
+  <button class="sub-btn" onclick="openPage('mainPage')">Back to Home</button>
+</div>
+
+<!-- SEASON 3 LIST -->
+<div id="season3" class="page">
+  <div class="episode-title">Season 3 – Episode List</div>
+
+  <button class="ep-btn" onclick="openPage('s3ep1')">Episode 1</button>
+  <button class="ep-btn" onclick="openPage('s3ep2')">Episode 2</button>
+  <button class="ep-btn" onclick="openPage('s3ep3')">Episode 3</button>
+  <button class="ep-btn" onclick="openPage('s3ep4')">Episode 4</button>
+  <button class="ep-btn" onclick="openPage('s3ep5')">Episode 5</button>
+  <button class="ep-btn" onclick="openpage('s3ep6')">Episode 6</button>
+  <button class="ep-btn" onclick="openPage('s3ep7')">Episode 7</button>
+
+  <button class="sub-btn" onclick="openPage('mainPage')">Back to Home</button>
+</div>
+
+<!-- SEASON 4 LIST -->
+<div id="season4" class="page">
+  <div class="episode-title">Season 4 – Episode List</div>
+
+  <button class="ep-btn" onclick="openPage('s4ep1')">Episode 1</button>
+  <button class="ep-btn" onclick="openPage('s4ep2')">Episode 2</button>
+  <button class="ep-btn" onclick="openPage('s4ep3')">Episode 3</button>
+  <button class="ep-btn" onclick="openPage('s4ep4')">Episode 4</button>
+  <button class="ep-btn" onclick="openPage('s4ep5')">Episode 5</button>
+  <button class="ep-btn" onclick="openpage('s4ep6')">Episode 6</button>
+
+  <button class="sub-btn" onclick="openPage('mainPage')">Back to Home</button>
+</div>
+
+<!-- SEASON 5 LIST -->
+<div id="season5" class="page">
+  <div class="episode-title">Season 5 – Episode List</div>
+
+  <button class="ep-btn" onclick="openPage('s5ep1')">Episode 1</button>
+  <button class="ep-btn" onclick="openPage('s5ep2')">Episode 2</button>
+  <button class="ep-btn" onclick="openPage('s5ep3')">Episode 3</button>
+  <button class="ep-btn" onclick="openPage('s5ep4')">Episode 4</button>
+  <button class="ep-btn" onclick="openPage('s5ep5')">Episode 5</button>
+  <button class="ep-btn" onclick="openpage('s5ep6')">Episode 6</button>
+
+  <button class="sub-btn" onclick="openPage('mainPage')">Back to Home</button>
+</div>
+
+<!-- SEASON 6 LIST -->
+<div id="season6" class="page">
+  <div class="episode-title">Season 6 – Episode List</div>
+
+  <button class="ep-btn" onclick="openPage('s6ep1')">Episode 1</button>
+  <button class="ep-btn" onclick="openPage('s6ep2')">Episode 2</button>
+  <button class="ep-btn" onclick="openPage('s6ep3')">Episode 3</button>
+  <button class="ep-btn" onclick="openPage('s6ep4')">Episode 4</button>
+  <button class="ep-btn" onclick="openPage('s6ep5')">Episode 5</button>
+  <button class="ep-btn" onclick="openpage('s6ep6')">Episode 6</button>
+  <button class="ep-btn" onclick="openPage('s6ep7')">Episode 7</button>
+  
+  <button class="sub-btn" onclick="openPage('mainPage')">Back to Home</button>
+</div>
+
+<!-- SEASON 7 LIST -->
+<div id="season7" class="page">
+  <div class="episode-title">Season 7 – Episode List</div>
+
+  <button class="ep-btn" onclick="openPage('s7ep1')">Episode 1</button>
+  <button class="ep-btn" onclick="openPage('s7ep2')">Episode 2</button>
+  <button class="ep-btn" onclick="openPage('s7ep3')">Episode 3</button>
+  <button class="ep-btn" onclick="openPage('s7ep4')">Episode 4</button>
+  <button class="ep-btn" onclick="openPage('s7ep5')">Episode 5</button>
+  <button class="ep-btn" onclick="openpage('s7ep6')">Episode 6</button>
+  <button class="ep-btn" onclick="openPage('s7ep7')">Episode 7</button>
+  <button class="ep-btn" onclick="openPage('s7ep8')">Episode 8</button>
+  <button class="ep-btn" onclick="openPage('s7ep9')">Episode 9</button>
+  <button class="ep-btn" onclick="openPage('s7ep10')">Episode 10</button>
+  <button class="ep-btn" onclick="openPage('s7ep11')">Episode 11</button>
+  <button class="ep-btn" onclick="openPage('s7ep12')">Episode 12</button>
+  <button class="ep-btn" onclick="openPage('s7ep13')">Episode 13</button>
+
+  <button class="sub-btn" onclick="openPage('mainPage')">Back to Home</button>
+</div>
+
+<!-- SEASON 8 LIST -->
+<div id="season8" class="page">
+  <div class="episode-title">Season 8 – Episode List</div>
+
+  <button class="ep-btn" onclick="openPage('s8ep1')">Episode 1</button>
+  <button class="ep-btn" onclick="openPage('s8ep2')">Episode 2</button>
+  <button class="ep-btn" onclick="openPage('s8ep3')">Episode 3</button>
+  <button class="ep-btn" onclick="openPage('s8ep4')">Episode 4</button>
+  <button class="ep-btn" onclick="openPage('s8ep5')">Episode 5</button>
+  <button class="ep-btn" onclick="openpage('s8ep6')">Episode 6</button>
+  <button class="ep-btn" onclick="openPage('s8ep7')">Episode 7</button>
+  <button class="ep-btn" onclick="openPage('s8ep8')">Episode 8</button>
+  <button class="ep-btn" onclick="openPage('s8ep9')">Episode 9</button>
+  <button class="ep-btn" onclick="openPage('s8ep10')">Episode 10</button>
+  <button class="ep-btn" onclick="openPage('s8ep11')">Episode 11</button>
+  <button class="ep-btn" onclick="openPage('s8ep12')">Episode 12</button>
+  <button class="ep-btn" onclick="openPage('s8ep13')">Episode 13</button>
+
+  <button class="sub-btn" onclick="openPage('mainPage')">Back to Home</button>
+</div>
+
+<!----if no download option is required then put nodownload to the video controls list-->
+<!-- S1 Episode 1 
+<div id="s1ep1" class="page">
+  <div class="episode-title">S1 • Episode 1 — The Rise of Voltron,Parts 1-3</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S01%20E01%20-%20The%20Rise%20of%20Voltron%2C%20Parts%201-3%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('season1')">Episode List</button>
+    <button class="nav-btn" onclick="openPage('s1ep2')">Next</button>
+  </div>
+</div     ---->
+
+<!-- S1 Episode 1 -->
+<div id="s1ep1" class="page">
+  <div class="episode-title">S1 • Episode 1 — The Rise of Voltron,Parts 1-3</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S01%20E01%20-%20The%20Rise%20of%20Voltron%2C%20Parts%201-3%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('season1')">Episode List</button>
+    <button class="nav-btn" onclick="openPage('s1ep2')">Next</button>
+  </div>
+</div>
+
+<!-- S1 Episode 2 -->
+<div id="s1ep2" class="page">
+  <div class="episode-title">S1 • Episode 2 — Some Assembly Required</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S01%20E02%20-%20Some%20Assembly%20Required%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s1ep1')">Back</button>
+    <button class="nav-btn" onclick="openPage('s1ep3')">Next</button>
+    <button class="nav-btn" onclick="openPage('season1')">Episode List</button>
+  </div>
+</div>
+
+<!-- S1 Episode 3 -->
+<div id="s1ep3" class="page">
+  <div class="episode-title">S1 • Episode 3 — Return of the Gladiator</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S01%20E03%20-%20Return%20of%20the%20Gladiator%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s1ep2')">Back</button>
+    <button class="nav-btn" onclick="openPage('s1ep4')">Next</button>
+    <button class="nav-btn" onclick="openPage('season1')">Episode List</button>
+  </div>
+</div>
+
+<!-- S1 Episode 4 -->
+<div id="s1ep4" class="page">
+  <div class="episode-title">S1 • Episode 4 — Fall of the Castle of Lions</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+     https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S01%20E04%20-%20Fall%20of%20the%20Castle%20of%20Lions%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s1ep3')">Back</button>
+    <button class="nav-btn" onclick="openPage('s1ep5')">Next</button>
+    <button class="nav-btn" onclick="openPage('season1')">Episode List</button>
+  </div>
+</div>
+
+<!-- S1 Episode 5 -->
+<div id="s1ep5" class="page">
+  <div class="episode-title">S1 • Episode 5 — Tears of Balmera</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S01%20E05%20-%20Tears%20of%20the%20Balmera%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s1ep4')">Back</button>
+    <button class="nav-btn" onclick="openPage('s1ep6')">Next</button>
+    <button class="nav-btn" onclick="openPage('season1')">Episode List</button>
+  </div>
+</div>
+
+<!-- S1 Episode 6 -->
+<div id="s1ep6" class="page">
+  <div class="episode-title">S1 • Episode 6 — Taking Flight</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+     https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S01%20E06%20-%20Taking%20Flight%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s1ep5')">Back</button>
+    <button class="nav-btn" onclick="openPage('s1ep7')">Next</button>
+    <button class="nav-btn" onclick="openPage('season1')">Episode List</button>
+  </div>
+</div>
+<!-- SEASON 1 EPISODES 7–12 -->
+
+<!-- S1 Episode 7 -->
+<div id="s1ep7" class="page">
+  <div class="episode-title">S1 • Episode 7 — Return of the Balmera</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S01%20E07%20-%20Return%20of%20the%20Balmera%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s1ep6')">Back</button>
+    <button class="nav-btn" onclick="openPage('s1ep8')">Next</button>
+    <button class="nav-btn" onclick="openPage('season1')">Episode List</button>
+  </div>
+</div>
+
+<!-- S1 Episode 8 -->
+<div id="s1ep8" class="page">
+  <div class="episode-title">S1 • Episode 8 — Rebirth</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S01%20E08%20-%20Rebirth%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s1ep7')">Back</button>
+    <button class="nav-btn" onclick="openPage('s1ep9')">Next</button>
+    <button class="nav-btn" onclick="openPage('season1')">Episode List</button>
+  </div>
+</div>
+
+<!-- S1 Episode 9 -->
+<div id="s1ep9" class="page">
+  <div class="episode-title">S1 • Episode 9 — Crystal Venom</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S01%20E09%20-%20Crystal%20Venom%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s1ep8')">Back</button>
+    <button class="nav-btn" onclick="openPage('s1ep10')">Next</button>
+    <button class="nav-btn" onclick="openPage('season1')">Episode List</button>
+  </div>
+</div>
+
+<!-- S1 Episode 10 -->
+<div id="s1ep10" class="page">
+  <div class="episode-title">S1 • Episode 10 — Collection and Extraction</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+     https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S01%20E10%20-%20Collection%20and%20Extraction%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s1ep9')">Back</button>
+    <button class="nav-btn" onclick="openPage('s1ep11')">Next</button>
+    <button class="nav-btn" onclick="openPage('season1')">Episode List</button>
+  </div>
+</div>
+
+<!-- S1 Episode 11 -->
+<div id="s1ep11" class="page">
+  <div class="episode-title">S1 • Episode 11 — The Black Paladin</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S01%20E11%20-%20The%20Black%20Paladin%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s1ep10')">Back</button>
+    <button class="nav-btn" onclick="openPage('s1ep12')">Next</button>
+    <button class="nav-btn" onclick="openPage('season1')">Episode List</button>
+  </div>
+</div>
+
+<!-- SEASON 2 EPISODES 1–7 -->
+
+<!-- S2 Episode 1 -->
+<div id="s2ep1" class="page">
+  <div class="episode-title">S2 • Episode 1 — Across the Universe</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E01%20-%20Across%20the%20Universe%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('season2')">Back</button>
+    <button class="nav-btn" onclick="openPage('s2ep2')">Next</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+
+<!-- S2 Episode 2 -->
+<div id="s2ep2" class="page">
+  <div class="episode-title">S2 • Episode 2 — The Depths</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E02%20-%20The%20Depths%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s2ep1')">Back</button>
+    <button class="nav-btn" onclick="openPage('s2ep3')">Next</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+
+<!-- S2 Episode 3 -->
+<div id="s2ep3" class="page">
+  <div class="episode-title">S2 • Episode 3 — Shiro's Escape</div>
+
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source
+        src="https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E03%20-%20Shiro%27s%20Escape%20(1080p%20-%20NF%20Web-DL).mp4"
+        type="video/mp4">
+    </video>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s2ep2')">Back</button>
+    <button class="nav-btn" onclick="openPage('s2ep4')">Next</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+
+<!-- S2 Episode 4 -->
+<div id="s2ep4" class="page">
+  <div class="episode-title">S2 • Episode 4 — Greening the Cube</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E04%20-%20Greening%20the%20Cube%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s2ep3')">Back</button>
+    <button class="nav-btn" onclick="openPage('s2ep5')">Next</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+
+<!-- S2 Episode 5 -->
+<div id="s2ep5" class="page">
+  <div class="episode-title">S2 • Episode 5 — Eye of the Storm</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E05%20-%20Eye%20of%20the%20Storm%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s2ep4')">Back</button>
+    <button class="nav-btn" onclick="openPage('s2ep6')">Next</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+
+<!-- S2 Episode 6 -->
+<div id="s2ep6" class="page">
+  <div class="episode-title">S2 • Episode 6 — The Ark of Taujeer</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E06%20-%20The%20Ark%20of%20Taujeer%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s2ep5')">Back</button>
+    <button class="nav-btn" onclick="openPage('s2ep7')">Next</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+
+<!-- S2 Episode 7 -->
+<div id="s2ep7" class="page">
+  <div class="episode-title">S2 • Episode 7 — Space Mall</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E07%20-%20Space%20Mall%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s2ep6')">Back</button>
+    <button class="nav-btn" onclick="openPage('s2ep8')">Next</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+<!-- SEASON 2 EPISODES 8–13 -->
+
+<!-- S2 Episode 8 -->
+<div id="s2ep8" class="page">
+  <div class="episode-title">S2 • Episode 8 — The Blade of Marmora</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E08%20-%20The%20Blade%20of%20Marmora%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s2ep7')">Back</button>
+    <button class="nav-btn" onclick="openPage('s2ep9')">Next</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+
+<!-- S2 Episode 9 -->
+<div id="s2ep9" class="page">
+  <div class="episode-title">S2 • Episode 9 — The Belly of the Weblum</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E09%20-%20The%20Belly%20of%20the%20Weblum%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s2ep8')">Back</button>
+    <button class="nav-btn" onclick="openPage('s2ep10')">Next</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+
+<!-- S2 Episode 10 -->
+<div id="s2ep10" class="page">
+  <div class="episode-title">S2 • Episode 10 — Escape from Beta Traz</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E10%20-%20Escape%20from%20Beta%20Traz%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s2ep9')">Back</button>
+    <button class="nav-btn" onclick="openPage('s2ep11')">Next</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+
+<!-- S2 Episode 11 -->
+<div id="s2ep11" class="page">
+  <div class="episode-title">S2 • Episode 11 — Stayin' Alive</div>
+
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source
+        src="https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E11%20-%20Stayin%27%20Alive%20(1080p%20-%20NF%20Web-DL).mp4"
+        type="video/mp4">
+    </video>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s2ep10')">Back</button>
+    <button class="nav-btn" onclick="openPage('s2ep12')">Next</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+
+<!-- S2 Episode 12 -->
+<div id="s2ep12" class="page">
+  <div class="episode-title">S2 • Episode 12 — Best Laid Plans</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E12%20-%20Best%20Laid%20Plans%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s2ep11')">Back</button>
+    <button class="nav-btn" onclick="openPage('s2ep13')">Next</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+
+<!-- S2 Episode 13 -->
+<div id="s2ep13" class="page">
+  <div class="episode-title">S2 • Episode 13 — Blackout</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S02%20E13%20-%20Blackout%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s2ep12')">Back</button>
+    <button class="nav-btn" onclick="openPage('season2')">Episode List</button>
+  </div>
+</div>
+
+<!-- S3 Episode 1 -->
+<div id="s3ep1" class="page">
+  <div class="episode-title">S3 • Episode 1 — Changing of the Guard</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+       https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S03%20E01%20-%20Changing%20of%20the%20Guard%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('season3')">Episode List</button>
+    <button class="nav-btn" onclick="openPage('s3ep2')">Next</button>
+  </div>
+</div>
+
+<!-- S3 Episode 2 -->
+<div id="s3ep2" class="page">
+  <div class="episode-title">S3 • Episode 2 — Red Paladin</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S03%20E02%20-%20Red%20Paladin%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s3ep1')">Back</button>
+    <button class="nav-btn" onclick="openPage('s3ep3')">Next</button>
+    <button class="nav-btn" onclick="openPage('season3')">Episode List</button>
+  </div>
+</div>
+
+<!-- S3 Episode 3 -->
+<div id="s3ep3" class="page">
+  <div class="episode-title">S3 • Episode 3 — The Hunted</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+        https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S03%20E03%20-%20The%20Hunted%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s3ep2')">Back</button>
+    <button class="nav-btn" onclick="openPage('s3ep4')">Next</button>
+    <button class="nav-btn" onclick="openPage('season3')">Episode List</button>
+  </div>
+</div>
+
+<!-- S3 Episode 4 -->
+<div id="s3ep4" class="page">
+  <div class="episode-title">S3 • Episode 4 — Hole in the Sky</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+       https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S03%20E04%20-%20Hole%20in%20the%20Sky%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s3ep3')">Back</button>
+    <button class="nav-btn" onclick="openPage('s3ep5')">Next</button>
+    <button class="nav-btn" onclick="openPage('season3')">Episode List</button>
+  </div>
+</div>
+
+<!-- S3 Episode 5 -->
+<div id="s3ep5" class="page">
+  <div class="episode-title">S3 • Episode 5 — The Journey</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S03%20E05%20-%20The%20Journey%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s3ep4')">Back</button>
+    <button class="nav-btn" onclick="openPage('s3ep6')">Next</button>
+    <button class="nav-btn" onclick="openPage('season3')">Episode List</button>
+  </div>
+</div>
+
+<!-- S3 Episode 6 -->
+<div id="s3ep6" class="page">
+  <div class="episode-title">S3 • Episode 6 — Tailing a Comet</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S03%20E06%20-%20Tailing%20a%20Comet%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s3ep5')">Back</button>
+    <button class="nav-btn" onclick="openPage('s3ep7')">Next</button>
+    <button class="nav-btn" onclick="openPage('season3')">Episode List</button>
+  </div>
+</div>
+
+<!-- S3 Episode 7 -->
+<div id="s3ep7" class="page">
+  <div class="episode-title">S3 • Episode 7 — The Legend Begins</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S03%20E07%20-%20The%20Legend%20Begins%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s3ep6')">Back</button>
+    <button class="nav-btn" onclick="openPage('season3')">Episode List</button>
+  </div>
+</div>
+
+<!-- S4 Episode 1 -->
+<div id="s4ep1" class="page">
+  <div class="episode-title">S4 • Episode 1 — Code of Honor</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S04%20E01%20-%20Code%20of%20Honor%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s4ep2')">Next</button>
+    <button class="nav-btn" onclick="openPage('season4')">Episode List</button>
+  </div>
+</div>
+
+<!-- S4 Episode 2 -->
+<div id="s4ep2" class="page">
+  <div class="episode-title">S4 • Episode 2 — Reunion</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S04%20E02%20-%20Reunion%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s4ep1')">Back</button>
+    <button class="nav-btn" onclick="openPage('s4ep3')">Next</button>
+    <button class="nav-btn" onclick="openPage('season4')">Episode List</button>
+  </div>
+</div>
+
+<!-- S4 Episode 3 -->
+<div id="s4ep3" class="page">
+  <div class="episode-title">S4 • Episode 3 — Black Site</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S04%20E03%20-%20Black%20Site%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s4ep2')">Back</button>
+    <button class="nav-btn" onclick="openPage('s4ep4')">Next</button>
+    <button class="nav-btn" onclick="openPage('season4')">Episode List</button>
+  </div>
+</div>
+
+<!-- S4 Episode 4 -->
+<div id="s4ep4" class="page">
+  <div class="episode-title">S4 • Episode 4 — The Voltron Showl</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S04%20E04%20-%20The%20Voltron%20Showl%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s4ep3')">Back</button>
+    <button class="nav-btn" onclick="openPage('s4ep5')">Next</button>
+    <button class="nav-btn" onclick="openPage('season4')">Episode List</button>
+  </div>
+</div>
+
+<!-- S4 Episode 5 -->
+<div id="s4ep5" class="page">
+  <div class="episode-title">S4 • Episode 5 — Begin the Blitz</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S04%20E05%20-%20Begin%20the%20Blitz%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s4ep4')">Back</button>
+    <button class="nav-btn" onclick="openPage('s4ep6')">Next</button>
+    <button class="nav-btn" onclick="openPage('season4')">Episode List</button>
+  </div>
+</div>
+
+<!-- S4 Episode 6 -->
+<div id="s4ep6" class="page">
+  <div class="episode-title">S4 • Episode 6 — A New Defender</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S04%20E06%20-%20A%20New%20Defender%20(1080p%20-%20NF%20Web-DL).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s4ep5')">Back</button>
+    <button class="nav-btn" onclick="openPage('season4')">Episode List</button>
+  </div>
+</div>
+
+<!-- S5 Episode 1 -->
+<div id="s5ep1" class="page">
+  <div class="episode-title">S5 • Episode 1 — The Prisoner</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+     https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S05%20E01%20-%20The%20Prisoner%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('season5')">Episode List</button>
+    <button class="nav-btn" onclick="openPage('s5ep2')">Next</button>
+  </div>
+</div>
+
+<!-- S5 Episode 2 -->
+<div id="s5ep2" class="page">
+  <div class="episode-title">S5 • Episode 2 — Blood Duel</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S05%20E02%20-%20Blood%20Duel%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s5ep1')">Back</button>
+    <button class="nav-btn" onclick="openPage('s5ep3')">Next</button>
+    <button class="nav-btn" onclick="openPage('season5')">Episode List</button>
+  </div>
+</div>
+
+<!-- S5 Episode 3 -->
+<div id="s5ep3" class="page">
+  <div class="episode-title">S5 • Episode 3 — Postmortem</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+     https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S05%20E03%20-%20Postmortem%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s5ep2')">Back</button>
+    <button class="nav-btn" onclick="openPage('s5ep4')">Next</button>
+    <button class="nav-btn" onclick="openPage('season5')">Episode List</button>
+  </div>
+</div>
+
+<!-- S5 Episode 4 -->
+<div id="s5ep4" class="page">
+  <div class="episode-title">S5 • Episode 4 —  Kral Zera</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S05%20E04%20-%20Kral%20Zera%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s5ep3')">Back</button>
+    <button class="nav-btn" onclick="openPage('s5ep5')">Next</button>
+    <button class="nav-btn" onclick="openPage('season5')">Episode List</button>
+  </div>
+</div>
+
+<!-- S5 Episode 5 -->
+<div id="s5ep5" class="page">
+  <div class="episode-title">S5 • Episode 5 — Bloodlines</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S05%20E05%20-%20Bloodlines%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s5ep4')">Back</button>
+    <button class="nav-btn" onclick="openPage('s5ep6')">Next</button>
+    <button class="nav-btn" onclick="openPage('season5')">Episode List</button>
+  </div>
+</div>
+
+<!-- S5 Episode 6 -->
+<div id="s5ep6" class="page">
+  <div class="episode-title">S5 • Episode 6 — White Lion</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+     https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S05%20E06%20-%20White%20Lion%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s5ep5')">Back</button>
+    <button class="nav-btn" onclick="openPage('season5')">Episode List</button>
+  </div>
+</div>
+
+<!-- S6 Episode 1 -->
+<div id="s6ep1" class="page">
+  <div class="episode-title">S6 • Episode 1 — Omega Sheild</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+     https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S06%20E01%20-%20Omega%20Shield%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('season6')">Episode List</button>
+    <button class="nav-btn" onclick="openPage('s6ep2')">Next</button>
+  </div>
+</div>
+
+<!-- S6 Episode 2 -->
+<div id="s6ep2" class="page">
+  <div class="episode-title">S6 • Episode 2 — Razor's Edge</div>
+
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source
+        src="https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S06%20E02%20-%20Razor%27s%20Edge%20(1080p%20-%20Web).ia.mp4"
+        type="video/mp4">
+    </video>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s6ep1')">Back</button>
+    <button class="nav-btn" onclick="openPage('s6ep3')">Next</button>
+    <button class="nav-btn" onclick="openPage('season6')">Episode List</button>
+  </div>
+</div>
+
+<!-- S6 Episode 3 -->
+<div id="s6ep3" class="page">
+  <div class="episode-title">S6 • Episode 3 — Monsters and Mana</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S06%20E03%20-%20Monsters%20and%20Mana%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s6ep2')">Back</button>
+    <button class="nav-btn" onclick="openPage('s6ep4')">Next</button>
+    <button class="nav-btn" onclick="openPage('season6')">Episode List</button>
+  </div>
+</div>
+
+<!-- S6 Episode 4 -->
+<div id="s6ep4" class="page">
+  <div class="episode-title">S6 • Episode 4 — The Colony</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S06%20E04%20-%20The%20Colony%20(1080p%20-%20Web).ia.mp4      " 
+      type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s6ep3')">Back</button>
+    <button class="nav-btn" onclick="openPage('s6ep5')">Next</button>
+    <button class="nav-btn" onclick="openPage('season6')">Episode List</button>
+  </div>
+</div>
+
+<!-- S6 Episode 5 -->
+<div id="s6ep5" class="page">
+  <div class="episode-title">S6 • Episode 5 — The Black Paladins</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S06%20E05%20-%20The%20Black%20Paladins%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s6ep4')">Back</button>
+    <button class="nav-btn" onclick="openPage('s6ep6')">Next</button>
+    <button class="nav-btn" onclick="openPage('season6')">Episode List</button>
+  </div>
+</div>
+
+<!-- S6 Episode 6 -->
+<div id="s6ep6" class="page">
+  <div class="episode-title">S6 • Episode 6 — All Good Things</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S06%20E06%20-%20All%20Good%20Things%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s6ep5')">Back</button>
+    <button class="nav-btn" onclick="openPage('s6ep7')">Next</button>
+    <button class="nav-btn" onclick="openPage('season6')">Episode List</button>
+  </div>
+</div>
+
+<!-- S6 Episode 7 -->
+<div id="s6ep7" class="page">
+  <div class="episode-title">S6 • Episode 7 — Defender of All Universes</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S06%20E07%20-%20Defender%20of%20All%20Universes%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s6ep6')">Back</button>
+    <button class="nav-btn" onclick="openPage('season6')">Episode List</button>
+  </div>
+</div>
+
+<!-- S7 Episode 1 -->
+<div id="s7ep1" class="page">
+  <div class="episode-title">S7 • Episode 1 — A Little Adventure</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E01%20-%20A%20Little%20Adventure%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('season7')">Episode List</button>
+    <button class="nav-btn" onclick="openPage('s7ep2')">Next</button>
+  </div>
+</div>
+
+<!-- S7 Episode 2 -->
+<div id="s7ep2" class="page">
+  <div class="episode-title">S7 • Episode 2 — The Road Home</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E02%20-%20The%20Road%20Home%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s7ep1')">Back</button>
+    <button class="nav-btn" onclick="openPage('s7ep3')">Next</button>
+    <button class="nav-btn" onclick="openPage('season7')">Episode List</button>
+  </div>
+</div>
+
+<!-- S7 Episode 3 -->
+<div id="s7ep3" class="page">
+  <div class="episode-title">S7 • Episode 3 — The Way Forward</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E03%20-%20The%20Way%20Forward%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s7ep2')">Back</button>
+    <button class="nav-btn" onclick="openPage('s7ep4')">Next</button>
+    <button class="nav-btn" onclick="openPage('season7')">Episode List</button>
+  </div>
+</div>
+
+<!-- S7 Episode 4 -->
+<div id="s7ep4" class="page">
+  <div class="episode-title">S7 • Episode 4 —The Feud</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E04%20-%20The%20Feud%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s7ep3')">Back</button>
+    <button class="nav-btn" onclick="openPage('s7ep5')">Next</button>
+    <button class="nav-btn" onclick="openPage('season7')">Episode List</button>
+  </div>
+</div>
+
+<!-- S7 Episode 5 -->
+<div id="s7ep5" class="page">
+  <div class="episode-title">S7 • Episode 5 — The Ruins</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E05%20-%20The%20Ruins%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s7ep4')">Back</button>
+    <button class="nav-btn" onclick="openPage('s7ep6')">Next</button>
+    <button class="nav-btn" onclick="openPage('season7')">Episode List</button>
+  </div>
+</div>
+
+<!-- S7 Episode 6 -->
+<div id="s7ep6" class="page">
+  <div class="episode-title">S7 • Episode 6 — The Journey Within</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E06%20-%20The%20Journey%20Within%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s7ep5')">Back</button>
+    <button class="nav-btn" onclick="openPage('s7ep7')">Next</button>
+    <button class="nav-btn" onclick="openPage('season7')">Episode List</button>
+  </div>
+</div>
+
+<!-- S7 Episode 7 -->
+<div id="s7ep7" class="page">
+  <div class="episode-title">S7 • Episode 7 — The Last Stand, Part 1</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E07%20-%20The%20Last%20Stand%2C%20Part%201%20of%202%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s7ep6')">Back</button>
+    <button class="nav-btn" onclick="openPage('s7ep8')">Next</button>
+    <button class="nav-btn" onclick="openPage('season7')">Episode List</button>
+  </div>
+</div>
+
+<!-- S7 Episode 8 -->
+<div id="s7ep8" class="page">
+  <div class="episode-title">S7 • Episode 8 — The Last Stand, Part 2</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E08%20-%20The%20Last%20Stand%2C%20Part%202%20of%202%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s7ep7')">Back</button>
+    <button class="nav-btn" onclick="openPage('s7ep9')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+<!-- S7 Episode 9 -->
+<div id="s7ep9" class="page">
+  <div class="episode-title">S7 • Episode 9 — Know Your Enemy</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E09%20-%20Know%20Your%20Enemy%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s7ep8')">Back</button>
+    <button class="nav-btn" onclick="openPage('s7ep10')">Next</button>
+    <button class="nav-btn" onclick="openPage('season7')">Episode List</button>
+  </div>
+</div>
+
+<!-- S7 Episode 10 -->
+<div id="s7ep10" class="page">
+  <div class="episode-title">S7 • Episode 10 — Heart of the Lion</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E10%20-%20Heart%20of%20the%20Lion%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s7ep9')">Back</button>
+        <button class="nav-btn" onclick="openPage('s7ep11')">Next</button>
+    <button class="nav-btn" onclick="openPage('season7')">Episode List</button>
+  </div>
+</div>
+
+<!-- S7 Episode 11 -->
+<div id="s7ep11" class="page">
+  <div class="episode-title">S7 • Episode 11 — Trial by Fire</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E11%20-%20Trial%20By%20Fire%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s7ep10')">Back</button>
+    <button class="nav-btn" onclick="openPage('s7ep12')">Next</button>
+    <button class="nav-btn" onclick="openPage('season7')">Episode List</button>
+  </div>
+</div>
+
+<!-- S7 Episode 12 -->
+<div id="s7ep12" class="page">
+  <div class="episode-title">S7 • Episode 12 — Lions' Pride, Part 1</div>
+
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source
+        src="https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E12%20-%20Lions%27%20Pride%2C%20Part%201%20of%202%20(1080p%20-%20Web).ia.mp4"
+        type="video/mp4">
+    </video>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s7ep11')">Back</button>
+    <button class="nav-btn" onclick="openPage('s7ep13')">Next</button>
+    <button class="nav-btn" onclick="openPage('season7')">Episode List</button>
+  </div>
+</div>
+
+<!-- S7 Episode 13 -->
+<div id="s7ep13" class="page">
+  <div class="episode-title">S7 • Episode 13 — Lions' Pride, Part 2</div>
+
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source
+        src="https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S07%20E13%20-%20Lions%27%20Pride%2C%20Part%202%20of%202%20(1080p%20-%20Web).ia.mp4"
+        type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s7ep12')">Back</button>
+    <button class="nav-btn" onclick="openPage('season7')">Episode List</button>
+  </div>
+</div>
+
+<!-- S8 Episode 1 -->
+<div id="s8ep1" class="page">
+  <div class="episode-title">S8 • Episode 1 — Launch Date</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E01%20-%20Launch%20Date%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep2')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+<!-- S8 Episode 2 -->
+<div id="s8ep2" class="page">
+  <div class="episode-title">S8 • Episode 2 — Shadows</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E02%20-%20Shadows%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep1')">Back</button>
+    <button class="nav-btn" onclick="openPage('s8ep3')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+<!-- S8 Episode 3 -->
+<div id="s8ep3" class="page">
+  <div class="episode-title">S8 • Episode 3 — The Prisoner's Dilemma</div>
+
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source
+        src="https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E03%20-%20The%20Prisoner%27s%20Dilemma%20(1080p%20-%20Web).ia.mp4"
+        type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep2')">Back</button>
+    <button class="nav-btn" onclick="openPage('s8ep4')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+
+<!-- S8 Episode 4 -->
+<div id="s8ep4" class="page">
+  <div class="episode-title">S8 • Episode 4 — Battle Scars</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E04%20-%20Battle%20Scars%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep3')">Back</button>
+    <button class="nav-btn" onclick="openPage('s8ep5')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+<!-- S8 Episode 5 -->
+<div id="s8ep5" class="page">
+  <div class="episode-title">S8 • Episode 5 — The Grudge</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E05%20-%20The%20Grudge%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep4')">Back</button>
+    <button class="nav-btn" onclick="openPage('s8ep6')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+<!-- S8 Episode 6 -->
+<div id="s8ep6" class="page">
+  <div class="episode-title">S8 • Episode 6 — Genesis</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E06%20-%20Genesis%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep5')">Back</button>
+    <button class="nav-btn" onclick="openPage('s8ep7')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+<!-- S8 Episode 7 -->
+<div id="s8ep7" class="page">
+  <div class="episode-title">S8 • Episode 7 — Day Forty-Seven</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E07%20-%20Day%20Forty-Seven%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep6')">Back</button>
+    <button class="nav-btn" onclick="openPage('s8ep8')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+<!-- SEASON 2 EPISODES 8–13 -->
+
+<!-- S8 Episode 8 -->
+<div id="s8ep8" class="page">
+  <div class="episode-title">S8 • Episode 8 — Clear Day</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E08%20-%20Clear%20Day%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep7')">Back</button>
+    <button class="nav-btn" onclick="openPage('s8ep9')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+<!-- S8 Episode 9 -->
+<div id="s8ep9" class="page">
+  <div class="episode-title">S8 • Episode 9 — Knights of Light, Part 1</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E09%20-%20Knights%20of%20Light%2C%20Part%201%20of%202%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep8')">Back</button>
+    <button class="nav-btn" onclick="openPage('s8ep10')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+<!-- S8 Episode 10 -->
+<div id="s8ep10" class="page">
+  <div class="episode-title">S8 • Episode 10 — Knights of Light,Part 2</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E10%20-%20Knights%20of%20Light%2C%20Part%202%20of%202%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep9')">Back</button>
+    <button class="nav-btn" onclick="openPage('s8ep11')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+<!-- S8 Episode 11 -->
+<div id="s8ep11" class="page">
+  <div class="episode-title">S8 • Episode 11 — Uncharted Regions</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E11%20-%20Uncharted%20Regions%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep10')">Back</button>
+    <button class="nav-btn" onclick="openPage('s8ep12')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+<!-- S8 Episode 12 -->
+<div id="s8ep12" class="page">
+  <div class="episode-title">S8 • Episode 12 — The Zenith</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload">
+      <source src="
+      https://ia600907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E12%20-%20The%20Zenith%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep11')">Back</button>
+    <button class="nav-btn" onclick="openPage('s8ep13')">Next</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+<!-- S8 Episode 13 -->
+<div id="s8ep13" class="page">
+  <div class="episode-title">S8 • Episode 13 — The End is the Begining</div>
+  <div class="video-container">
+    <video controls controlsList="nodownload" >
+      <source src="
+      https://ia800907.us.archive.org/17/items/voltron-legendary-defender/Voltron%20(LD)%20-%20S08%20E13%20-%20The%20End%20is%20the%20Beginning%20(1080p%20-%20Web).ia.mp4
+      " type="video/mp4">
+    </video>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-btn" onclick="openPage('s8ep12')">Back</button>
+    <button class="nav-btn" onclick="openPage('season8')">Episode List</button>
+  </div>
+</div>
+
+</body>
+</html>
+
+
